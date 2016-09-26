@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="lib1" version="8.0.5.0" xmlns:map="lib1">
+    <input path="/lib1/schema/schema1.xsd"/>
+    <output path="/lib1/schema/schema1.xsd"/>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="sub1_Mapping">
+        <input path="mb:msg(Input,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Input"/>
+        <output path="mb:msg(Output,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Output"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Properties"/>
+            <output path="$ComIbmMessageAssembly_Output/Properties"/>
+            <override>
+                <assign value="{lib1}">
+                    <output path="$ComIbmMessageAssembly_Output/Properties/MessageSet"/>
+                </assign>
+            </override>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Input/id"/>
+            <output path="$ComIbmMessageAssembly_Output/Output/code"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Input/message"/>
+            <output path="$ComIbmMessageAssembly_Output/Output/text"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

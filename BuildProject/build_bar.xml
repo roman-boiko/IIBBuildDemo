@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================                                                      
+     Demo IIB Ant Build    
+     This is to show how to perform basic build tasks for IIB project
+                   
+     Roman Boiko                                                                
+     ====================================================================== -->
+<project name="IIBDemoBuild" default="deploybar" basedir="..">
+
+	<target name="init" description="Sets the environment to build bar">
+		<tstamp />
+		<property name="path.build" value="BuildProject" />
+		<property file="${path.build}/build.properties" />
+	</target>
+
+	<target name="createbar" depends="init" description="Creates bar file">
+		<exec executable="mqsicreatebar" failonerror="true">
+			<arg value="-data" />
+			<arg value="${basedir}" />
+			<arg value="-b" />
+			<arg value="${path.build}/${bar.fullname}" />
+			<arg value="-version" />
+			<arg value="${bar.ver}" />
+			<arg value="-a" />
+			<arg value="${app.name}" />
+			<arg value="-l" />
+			<arg value="${lib.name}" />
+			<arg value="-deployAsSource" />
+		</exec>
+	</target>
+
+	<target name="baroverride" depends="createbar" description="Overrides node and flow properties in the bar file">
+		<exec executable="mqsiapplybaroverride" failonerror="true" vmlauncher="false">
+			<arg value="-b" />
+			<arg value="${path.build}/${bar.fullname}" />
+			<arg value="-p" />
+			<arg value="${path.build}/override.properties" />
+			<arg value="-k" />
+			<arg value="${app.name}_${bar.ver}" />
+		</exec>
+
+	</target>
+
+	<target name="deploybar" depends="baroverride" description="Delpoys bar file on the taget server">
+		<exec executable="mqsideploy" failonerror="true">
+			<arg value="-n" />
+			<arg value="${path.build}/${iib.brokerfile}" />
+			<arg value="-e" />
+			<arg value="${iib.isrv}" />
+			<arg value="-a" />
+			<arg value="${path.build}/${bar.fullname}" />
+			<arg value="-m" />
+		</exec>
+	</target>
+
+</project>
+

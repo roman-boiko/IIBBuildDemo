@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================                                                      
+     Demo IIB Ant Build    
+     This is to show how to perform basic build tasks for IIB project
+                   
+     Roman Boiko                                                                
+     ====================================================================== -->
+<project name="IIBDemoBuildInit" default="run" basedir="..">
+	<description>
+            Sets environment to buid and launches build_bar.xml
+    </description>
+
+	<target name="init">
+		<property name="path.build" value="BuildProject" />
+		<property name="build.main" value="${path.build}/build_bar.xml" />
+		<property file="${path.build}/build.properties" />
+	</target>
+
+	<target name="run" depends="init">
+		<fileset dir="${ant.library.dir}" id="ant.jar.files">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathconvert pathsep=":" property="jars.ant" refid="ant.jar.files" />
+		<property name="ext.dirs" value="${iib.path}/common/jdk/lib:${iib.path}/common/jdk/jre/lib/ext" />
+		<property name="args.jvm" value="-cp $CLASSPATH:$MQSI_JREPATH/${jars.ant} -Djava.ext.dirs=${ext.dirs} -Dant.home=${ant.home} ${ant.main.class}" />
+		<property name="args.ant" value="-f ${build.main}" />
+		<property name="init.env" value="source ${iib.profile}" />
+		
+		<exec executable="/bin/sh">
+			<arg value="-c"/>
+			<arg value="${init.env}; $MQSI_JREPATH/bin/java ${args.jvm} ${args.ant}"/>
+		</exec>
+
+	</target>
+</project>
